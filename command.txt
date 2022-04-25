@@ -1,0 +1,2 @@
+mlagents-learn config/config.yaml --run-id=MBlockAgent
+tensorboard --logdir results --port 6006
