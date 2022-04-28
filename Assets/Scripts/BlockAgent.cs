@@ -4,212 +4,147 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
- 
-[System.Serializable]
-public class AgentSet
-{
-	public GameObject block;
-	public GameObject target;
-}
- 
+
+
 public class BlockAgent : Agent
 {
-	public bool initializeRandomly = false;
-	// public Vector2 groundSize = new Vector2(20, 20);
-	public float bound = 10f;
-	public GameObject Block;
-	public GameObject Target;
-	bool agentPicked = false;
-	List<Vector3> blockInitalPositions;
-	Vector3 agentInitalPosition;
-	float oldTargetDist;
-	float oldBlockDist;
-	int stepCount = 0;
-	public int MaxSteps;
-	int goalReachCount = 0;
+	[HideInInspector]
+	public ConstructionController Controller = null;
+	[HideInInspector]
+	public Vector3 InitialPosition;
+	[HideInInspector]
+	public Vector3 TargetPosition;
+	[HideInInspector]
+	public GameObject Block = null;
+	[HideInInspector]
+	public GameObject BlockRoot = null;
+	[HideInInspector]
+	public int AgentIndex;
 
-	bool WPressed = false;
-	bool DPressed = false;
-	bool APressed = false;
-	bool SPressed = false;
-	
-	public AgentSet[] agentSets;
-	int timeStepCounter = 1;
-	int currentAgentSetIndex = 0;
-	public bool InHeuristics = false;
-	public bool SlowDownTime = false;
+	bool AgentPicked = false;
+	float OldTargetDist;
+	float OldBlockDist;
+	float OldInitialBlockDist;
+	bool AgentReached = false;
 	
     void Start () {
-		blockInitalPositions = new List<Vector3>(agentSets.Length);
-		for(int i=0; i < agentSets.Length; i++){
-			blockInitalPositions.Add(agentSets[i].block.transform.position);
-		}
-		agentInitalPosition = this.transform.position;
-		if(SlowDownTime) {
-			Time.timeScale = 0.2f;
-		} else {
-			Time.timeScale = 1f;
-		}
+
     }
-	
-	void Update() {
-		WPressed = Input.GetKeyDown(KeyCode.W);
-		DPressed = Input.GetKeyDown(KeyCode.D);
-		APressed = Input.GetKeyDown(KeyCode.A);
-		SPressed = Input.GetKeyDown(KeyCode.S);
-	}
 	
     public override void OnEpisodeBegin()
     {
-		// Debug.Log("Episode Begin");
-		for(int i=0; i < agentSets.Length; i++){
-			agentSets[i].block.transform.SetParent(this.transform.parent);
-			agentSets[i].block.transform.position = blockInitalPositions[i];
-		}
-		this.transform.localPosition = agentInitalPosition;
-		
-		for(int i=0; i < agentSets.Length; i++){
-			agentSets[i].target.transform.position = new Vector3(Random.Range(0, 10) + 0.5f,
-											   0.5f,
-											   Random.Range(0, 10) + 0.5f);
-		}
-		// this.transform.position = new Vector3(Random.Range(-49, 49) + 0.5f,
-											   // 0.5f,
-											   // Random.Range(-49, 49) + 0.5f);
-	
-		stepCount = 0;
-		currentAgentSetIndex = 0;
-		timeStepCounter = 1;
-		// For current agent set
-		agentPicked = false;
-		oldTargetDist = Mathf.Infinity;
-		oldBlockDist = Mathf.Infinity;
-		
+		AgentPicked = false;
+		OldTargetDist = Mathf.Infinity;
+		OldBlockDist = Mathf.Infinity;
+		OldInitialBlockDist = Mathf.Infinity;
+		AgentReached = false;
     }
 	
 	public override void CollectObservations(VectorSensor sensor)
 	{
+		if(Block == null) {
+			sensor.AddObservation(this.transform.localPosition);
+			sensor.AddObservation(0);
+			sensor.AddObservation(InitialPosition);
+			return;
+		}
+
 		sensor.AddObservation(this.transform.localPosition);
-		sensor.AddObservation(agentPicked? 1 : 0);
-		if(agentPicked) {
-			sensor.AddObservation(agentSets[currentAgentSetIndex].target.transform.localPosition);
+		sensor.AddObservation(AgentPicked? 1 : 0);
+		if(AgentPicked) {
+			sensor.AddObservation(TargetPosition);
 		} else {
-			sensor.AddObservation(agentSets[currentAgentSetIndex].block.transform.localPosition);
+			sensor.AddObservation(Block.transform.localPosition);
 		}
 	}
 	
 	public override void OnActionReceived(ActionBuffers actionBuffers)
 	{
-		if(!InHeuristics) {
-			stepCount++;
-			if(stepCount > MaxSteps * timeStepCounter) {
-				EndEpisode();
-			}
-		}
-		
-		// 0 - idle NA
+		// 0 - idle
 		// 1 - forward
 		// 2 - right
 		// 3 - backward
 		// 4 - left
-		
+		Controller.UpdateTimeStep();
 		int action = actionBuffers.DiscreteActions[0];
+		Vector3 oldAgentPos = this.transform.position;
 		switch(action)
 		{
 			case 0: {
+				break;
+			}
+			case 1: {
 				this.transform.position = new Vector3(this.transform.position.x, 
 													this.transform.position.y, 
 													this.transform.position.z + 1);
 				break;
 			}
-			case 1: {
+			case 2: {
 				this.transform.position = new Vector3(this.transform.position.x + 1, 
 													this.transform.position.y, 
 													this.transform.position.z);
 				break;
 			}
-			case 2: {
+			case 3: {
 				this.transform.position = new Vector3(this.transform.position.x, 
 													this.transform.position.y, 
 													this.transform.position.z - 1);
 				break;
 			}
-			case 3: {
+			case 4: {
 				this.transform.position = new Vector3(this.transform.position.x - 1, 
 													this.transform.position.y, 
 													this.transform.position.z);
 				break;
 			}
 		}
-		if(this.transform.localPosition.x > (bound) || this.transform.localPosition.x < -(bound)){
-			EndEpisode();
-		}
-		if(this.transform.localPosition.z > (bound) || this.transform.localPosition.z < -(bound)){
-			EndEpisode();
-		}
-		
-		// float agentBlock1Dst = Vector3.Distance(this.transform.localPosition, agentSets[0].block.transform.localPosition);
-		// float agentBlock2Dst = Vector3.Distance(this.transform.localPosition, agentSets[1].block.transform.localPosition);
-		// float agentBlock3Dst = Vector3.Distance(this.transform.localPosition, agentSets[2].block.transform.localPosition);
-		// float agentBlock4Dst = Vector3.Distance(this.transform.localPosition, agentSets[3].block.transform.localPosition);
-		// if(agentBlock1Dst < 1 && currentAgentSetIndex != 0) {
-			// AddReward(-1f);
-		// }
-		// if(agentBlock2Dst < 1 && currentAgentSetIndex != 1) {
-			// AddReward(-1f);
-		// }
-		// if(agentBlock3Dst < 1 && currentAgentSetIndex != 2) {
-			// AddReward(-1f);
-		// }
-		// if(agentBlock4Dst < 1 && currentAgentSetIndex != 3) {
-			// AddReward(-1f);
-		// }
-		
-		 
-		// Reward 4
-		if(!agentPicked){
-			float blockDst = Vector3.Distance(this.transform.localPosition, agentSets[currentAgentSetIndex].block.transform.localPosition);
-			if(blockDst < 1) {
-				agentPicked = true;
-				SetReward(1);
-				agentSets[currentAgentSetIndex].block.transform.SetParent(this.transform);
-				agentSets[currentAgentSetIndex].block.transform.localPosition = new Vector3(0f, 1f, 0f);
-			}
-			if(blockDst < oldBlockDist) {
-				oldBlockDist = blockDst;
-				AddReward(0.05f);
-			}
-		}
-		if(agentPicked) {
-			float targetDst = Vector3.Distance(this.transform.localPosition, agentSets[currentAgentSetIndex].target.transform.localPosition);
-			if(targetDst < 1) {
-				SetReward(1);
-				if(currentAgentSetIndex < agentSets.Length - 1) {
-					agentPicked = false;
-					agentSets[currentAgentSetIndex].block.transform.SetParent(this.transform.parent);
-					agentSets[currentAgentSetIndex].block.transform.position = this.transform.position;
-					currentAgentSetIndex++;
-					oldTargetDist = Mathf.Infinity;
-					oldBlockDist = Mathf.Infinity;
-					if(currentAgentSetIndex % 4 == 0) {
-						timeStepCounter++;
-					}
-				} else {
-					goalReachCount++;
-					Debug.Log("Goal Reached: " + goalReachCount);
-					EndEpisode();
+
+		Controller.UpdateAgentBounds(oldAgentPos, this.transform.localPosition, gameObject);
+		if(Block != null) {
+			if(!AgentPicked) {
+				float blockDst = Vector3.Distance(this.transform.localPosition, Block.transform.localPosition);
+				if(blockDst < 1) {
+					AgentPicked = true;
+					SetReward(1);
+					Block.transform.SetParent(this.transform);
+					Block.transform.localPosition = new Vector3(0f, 1f, 0f);
 				}
-				// Debug.Log("currentAgentSetIndex: " + currentAgentSetIndex);
-
-			} 
-			if(targetDst < oldTargetDist) {
-				oldTargetDist = targetDst;
-				AddReward(0.05f);
+				if(blockDst < OldBlockDist) {
+					OldBlockDist = blockDst;
+					AddReward(0.05f);
+				}
 			}
 
+			if(AgentPicked) {
+				float targetDst = Vector3.Distance(this.transform.localPosition, TargetPosition);
+				if(targetDst < 1) {
+					SetReward(1);
+					AgentPicked = false;
+					Block.transform.SetParent(BlockRoot.transform);
+					Block.transform.position = this.transform.position;
+					OldTargetDist = Mathf.Infinity;
+					OldBlockDist = Mathf.Infinity;
+					Controller.AgentGoalCompleted(gameObject);
+				} 
+				if(targetDst < OldTargetDist) {
+					OldTargetDist = targetDst;
+					AddReward(0.05f);
+				}
+			}
+		} else {
+			float initialDst = Vector3.Distance(this.transform.localPosition, InitialPosition);
+			if(initialDst < OldInitialBlockDist) {
+				OldInitialBlockDist = initialDst;
+				AddReward(0.05f);
+			}
+			if(initialDst < 1) {
+				if(!AgentReached) {
+					SetReward(1f);
+					AgentReached = true;
+				}
+			}
 		}
 		
-		// Debug.Log("Cumm Reward: " + GetCumulativeReward() + ", last action: " + action);
 	}
 	
 	public override void Heuristic(in ActionBuffers actionsOut)
@@ -222,20 +157,24 @@ public class BlockAgent : Agent
 		
 		var discreteActionsOut = actionsOut.DiscreteActions;
 		discreteActionsOut[0] = -1;
+
+		if(Controller.HeuristicIndex != AgentIndex) {
+			return;
+		}
 	
-		if(WPressed) {
+		if(Input.GetKeyDown(KeyCode.W)) {
 			discreteActionsOut[0] = 0;
 		}	
 		
-		if(DPressed) {
+		if(Input.GetKeyDown(KeyCode.D)) {
 			discreteActionsOut[0] = 1;
 		}
 
-		if(SPressed) {
+		if(Input.GetKeyDown(KeyCode.S)) {
 			discreteActionsOut[0] = 2;
 		}
 		
-		if(APressed) {
+		if(Input.GetKeyDown(KeyCode.A)) {
 			discreteActionsOut[0] = 3;
 		}
 	}
