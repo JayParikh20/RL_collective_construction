@@ -2,22 +2,58 @@
     "BlockAgent": {
         "checkpoints": [
             {
-                "steps": 300068,
-                "file_path": "results\\MultiAgent\\BlockAgent\\BlockAgent-300068.onnx",
-                "reward": 5.034999370574951,
-                "creation_time": 1651100400.5195131,
+                "steps": 300044,
+                "file_path": "results\\MultiAgent\\BlockAgent\\BlockAgent-300044.onnx",
+                "reward": 4.949999764561653,
+                "creation_time": 1651343854.5216987,
                 "auxillary_file_paths": [
-                    "results\\MultiAgent\\BlockAgent\\BlockAgent-300068.pt"
+                    "results\\MultiAgent\\BlockAgent\\BlockAgent-300044.pt"
+                ]
+            },
+            {
+                "steps": 300044,
+                "file_path": "results\\MultiAgent\\BlockAgent\\BlockAgent-300044.onnx",
+                "reward": null,
+                "creation_time": 1651343901.918428,
+                "auxillary_file_paths": [
+                    "results\\MultiAgent\\BlockAgent\\BlockAgent-300044.pt"
+                ]
+            },
+            {
+                "steps": 300044,
+                "file_path": "results\\MultiAgent\\BlockAgent\\BlockAgent-300044.onnx",
+                "reward": null,
+                "creation_time": 1651343929.3826058,
+                "auxillary_file_paths": [
+                    "results\\MultiAgent\\BlockAgent\\BlockAgent-300044.pt"
+                ]
+            },
+            {
+                "steps": 499991,
+                "file_path": "results\\MultiAgent\\BlockAgent\\BlockAgent-499991.onnx",
+                "reward": 6.999999523162842,
+                "creation_time": 1651346268.701367,
+                "auxillary_file_paths": [
+                    "results\\MultiAgent\\BlockAgent\\BlockAgent-499991.pt"
+                ]
+            },
+            {
+                "steps": 500012,
+                "file_path": "results\\MultiAgent\\BlockAgent\\BlockAgent-500012.onnx",
+                "reward": 6.5249998569488525,
+                "creation_time": 1651346269.0437107,
+                "auxillary_file_paths": [
+                    "results\\MultiAgent\\BlockAgent\\BlockAgent-500012.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 300068,
+            "steps": 500012,
             "file_path": "results\\MultiAgent\\BlockAgent.onnx",
-            "reward": 5.034999370574951,
-            "creation_time": 1651100400.5195131,
+            "reward": 6.5249998569488525,
+            "creation_time": 1651346269.0437107,
             "auxillary_file_paths": [
-                "results\\MultiAgent\\BlockAgent\\BlockAgent-300068.pt"
+                "results\\MultiAgent\\BlockAgent\\BlockAgent-500012.pt"
             ]
         }
     },

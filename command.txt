@@ -1,2 +1,2 @@
-mlagents-learn config/config.yaml --run-id=MBlockAgent
+mlagents-learn config/config.yaml --run-id=MultiAgents2RND5x5 --force
 tensorboard --logdir results --port 6006

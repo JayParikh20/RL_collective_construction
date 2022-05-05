@@ -20,6 +20,7 @@ public class ConstructionController : MonoBehaviour
     public int HeuristicIndex = 0;
     public int MaxTimeSteps = -1;
     public bool InHeuristics = false;
+    public bool Randomized = false;
     
     private List<GameObject> SpawnedBlocks = new List<GameObject>();
     private List<GameObject> SpawnedTargets = new List<GameObject>();
@@ -29,13 +30,11 @@ public class ConstructionController : MonoBehaviour
     private int CurrentBlockIndex = 0;
     private int GoalCompletedIndex = 0;
     private int TimeStep = 0;
+    // private int TimeStepMultiplier = 1;
     private int GoalReachedIndex = 0;
-    private int AgentCollided = 0;
-    private int[,] OccupancyGrid;
 
     void Start()
     {
-        OccupancyGrid = new int[GridSize, GridSize];
         if(MaxTimeSteps < 0) {
             Debug.Log("Max Time Step not set!");
         }
@@ -51,16 +50,19 @@ public class ConstructionController : MonoBehaviour
         if(InHeuristics) return;
 
         TimeStep++;  
+        if(CurrentBlockIndex % 4 == 0) {
+            TimeStep=0;
+        }
         if(TimeStep > MaxTimeSteps) {
             for(int i=0; i <  BlockAgents.Count; i++) {
                     BlockAgents[i].GetComponent<BlockAgent>().EpisodeInterrupted();
             }
             ResetEnvironment(true);
+            Debug.Log("MaxTimeStep reached");
         }
     }
 
     public void ResetEnvironment(bool interrupted = false) {
-        OccupancyGrid = new int[GridSize, GridSize];
         for(int i=0; i <  BlockAgents.Count; i++) {
             BlockAgents[i].GetComponent<BlockAgent>().Block = null;
             if(interrupted) {
@@ -73,7 +75,7 @@ public class ConstructionController : MonoBehaviour
         TimeStep = 0;
         CurrentBlockIndex = 0;
         GoalCompletedIndex = 0;
-        AgentCollided = 0;
+        // TimeStepMultiplier = 1;
         SpawnMaterialBlocks();
         SpawnTargetBlocks();
         HandleAgents();
@@ -94,28 +96,10 @@ public class ConstructionController : MonoBehaviour
             ResetEnvironment();
             return;
 		}
-       
-        OccupancyGrid[(int) Mathf.Floor(oldPosition.x+10), (int) Mathf.Floor(oldPosition.z+10)] = 0;
-        int newPostionValue =  OccupancyGrid[(int) Mathf.Floor(localPostion.x+10), (int) Mathf.Floor(localPostion.z+10)];
-        if(newPostionValue != 0) {
-            // Penalizing for collision 
-            AgentCollided++;
-            Debug.Log("Agent Collided: "+ AgentCollided);
-            callingAgent.GetComponent<BlockAgent>().AddReward(-1f);
-        }
-        OccupancyGrid[(int) Mathf.Floor(localPostion.x+10), (int) Mathf.Floor(localPostion.z+10)] = 1;
-        // StringBuilder sb = new StringBuilder();
-        // for(int k=0; k< OccupancyGrid .GetLength(1); k++)
-        // {
-        //     for(int j=0; j<OccupancyGrid .GetLength(0); j++)
-        //     {
-        //         sb.Append(OccupancyGrid[k,j]);
-        //         sb.Append(' ');
-        //     }
-        //     sb.AppendLine();
-        // }
-        // Debug.Log(sb.ToString());
-        // Debug.Log("|||||||||||||||||||||||||||||||||||");
+
+        float agent12_distance = Vector3.Distance(BlockAgents[0].GetComponent<BlockAgent>().AgentPosition, BlockAgents[1].GetComponent<BlockAgent>().AgentPosition);
+        BlockAgents[0].GetComponent<BlockAgent>().DistanceWithOtherAgent = agent12_distance;
+        BlockAgents[1].GetComponent<BlockAgent>().DistanceWithOtherAgent = agent12_distance;
     }
 
     public void AgentGoalCompleted(GameObject callingAgent) {
@@ -174,12 +158,30 @@ public class ConstructionController : MonoBehaviour
         }
         TargetRoot = new GameObject("Targets");
         TargetRoot.transform.SetParent(this.transform.parent);
-        for(int i=0; i < NumberOfMaterials; i++) {
-                    float blockX = TargetSpawnStart.transform.position.x + Mathf.Floor(i / TargetHeight);
-                    float blockZ = TargetSpawnStart.transform.position.z - (TargetHeight - 1) + (i % TargetHeight);
-                    GameObject target = Instantiate(Target, new Vector3(blockX, TargetSpawnStart.transform.position.y, blockZ), Quaternion.identity);
-                    target.transform.SetParent(TargetRoot.transform); 
-                    SpawnedTargets.Add(target);
+        if(Randomized) {
+            List<Vector3> positions = new List<Vector3>();
+            for(int i=0; i < NumberOfMaterials; i++) {
+                float blockX = UnityEngine.Random.Range(0, 5) + 0.5f;
+                float blockZ = UnityEngine.Random.Range(0, 5) + 0.5f;
+                Vector3 pos =  new Vector3(blockX, TargetSpawnStart.transform.position.y, blockZ);
+                while(positions.Contains(pos)) {
+                    blockX = UnityEngine.Random.Range(0, 5) + 0.5f;
+                    blockZ = UnityEngine.Random.Range(0, 5) + 0.5f;
+                    pos =  new Vector3(blockX, TargetSpawnStart.transform.position.y, blockZ);
+                }
+                GameObject target = Instantiate(Target, pos, Quaternion.identity);
+                target.transform.SetParent(TargetRoot.transform); 
+                SpawnedTargets.Add(target);
+                positions.Add(pos);
+            }
+        } else {
+            for(int i=0; i < NumberOfMaterials; i++) {
+                float blockX = TargetSpawnStart.transform.position.x + Mathf.Floor(i / TargetHeight);
+                float blockZ = TargetSpawnStart.transform.position.z - (TargetHeight - 1) + (i % TargetHeight);
+                GameObject target = Instantiate(Target, new Vector3(blockX, TargetSpawnStart.transform.position.y, blockZ), Quaternion.identity);
+                target.transform.SetParent(TargetRoot.transform); 
+                SpawnedTargets.Add(target);
+            }
         }
         TargetSpawnStart.SetActive(false);
     }
@@ -193,19 +195,10 @@ public class ConstructionController : MonoBehaviour
             BlockAgents[i].GetComponent<BlockAgent>().BlockRoot = BlockRoot;
             BlockAgents[i].GetComponent<BlockAgent>().Block = SpawnedBlocks[i];
             BlockAgents[i].GetComponent<BlockAgent>().TargetPosition = SpawnedTargets[i].transform.localPosition;
-            OccupancyGrid[(int) Mathf.Floor(AgentsInitialPosition[i].x+10), (int) Mathf.Floor(AgentsInitialPosition[i].z+10)] = 1;
-            // StringBuilder sb = new StringBuilder();
-            // for(int k=0; k< OccupancyGrid .GetLength(1); k++)
-            // {
-            //     for(int j=0; j<OccupancyGrid .GetLength(0); j++)
-            //     {
-            //         sb.Append(OccupancyGrid[k,j]);
-            //         sb.Append(' ');
-            //     }
-            //     sb.AppendLine();
-            // }
-            // Debug.Log(sb.ToString());
         }
         CurrentBlockIndex = BlockAgents.Count - 1;
+        float agent12_distance = Vector3.Distance(BlockAgents[0].GetComponent<BlockAgent>().AgentPosition, BlockAgents[1].GetComponent<BlockAgent>().AgentPosition);
+        BlockAgents[0].GetComponent<BlockAgent>().DistanceWithOtherAgent = agent12_distance;
+        BlockAgents[1].GetComponent<BlockAgent>().DistanceWithOtherAgent = agent12_distance;
     }
 }
