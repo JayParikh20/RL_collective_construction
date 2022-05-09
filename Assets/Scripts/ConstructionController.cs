@@ -29,8 +29,7 @@ public class ConstructionController : MonoBehaviour
     private List<Vector3> AgentsInitialPosition;
     private int CurrentBlockIndex = 0;
     private int GoalCompletedIndex = 0;
-    private int TimeStep = 0;
-    // private int TimeStepMultiplier = 1;
+    public int TimeStep = 0;
     private int GoalReachedIndex = 0;
 
     void Start()
@@ -75,7 +74,6 @@ public class ConstructionController : MonoBehaviour
         TimeStep = 0;
         CurrentBlockIndex = 0;
         GoalCompletedIndex = 0;
-        // TimeStepMultiplier = 1;
         SpawnMaterialBlocks();
         SpawnTargetBlocks();
         HandleAgents();
@@ -96,10 +94,7 @@ public class ConstructionController : MonoBehaviour
             ResetEnvironment();
             return;
 		}
-
-        float agent12_distance = Vector3.Distance(BlockAgents[0].GetComponent<BlockAgent>().AgentPosition, BlockAgents[1].GetComponent<BlockAgent>().AgentPosition);
-        BlockAgents[0].GetComponent<BlockAgent>().DistanceWithOtherAgent = agent12_distance;
-        BlockAgents[1].GetComponent<BlockAgent>().DistanceWithOtherAgent = agent12_distance;
+        HandleAgentsObservation();
     }
 
     public void AgentGoalCompleted(GameObject callingAgent) {
@@ -195,10 +190,103 @@ public class ConstructionController : MonoBehaviour
             BlockAgents[i].GetComponent<BlockAgent>().BlockRoot = BlockRoot;
             BlockAgents[i].GetComponent<BlockAgent>().Block = SpawnedBlocks[i];
             BlockAgents[i].GetComponent<BlockAgent>().TargetPosition = SpawnedTargets[i].transform.localPosition;
+
         }
         CurrentBlockIndex = BlockAgents.Count - 1;
-        float agent12_distance = Vector3.Distance(BlockAgents[0].GetComponent<BlockAgent>().AgentPosition, BlockAgents[1].GetComponent<BlockAgent>().AgentPosition);
-        BlockAgents[0].GetComponent<BlockAgent>().DistanceWithOtherAgent = agent12_distance;
-        BlockAgents[1].GetComponent<BlockAgent>().DistanceWithOtherAgent = agent12_distance;
+        HandleAgentsObservation();
+    }
+
+    // TODO: HandleAgent is getting called twice by both agents, but this fucntion handles for both agents
+    void HandleAgentsObservation() {
+        int[,] obs = new int[5, 5];
+        int[,] obs1 = new int[5, 5];
+        for(int m = 0; m < obs.GetLength(0); m++)
+        {
+            for(int n = 0; n < obs.GetLength(1); n++)
+            {
+                obs[m,n] = 1;
+                obs1[m,n] = 1;
+            }
+        }
+       
+        Vector3 callingAgent1Pos = new Vector3(BlockAgents[0].transform.position.x+ (GridSize/2), 
+                                                BlockAgents[0].transform.position.y,
+                                                BlockAgents[0].transform.position.z+ (GridSize/2));
+        Vector3 callingAgent2Pos = new Vector3(BlockAgents[1].transform.position.x+ (GridSize/2), 
+                                                BlockAgents[1].transform.position.y,
+                                                BlockAgents[1].transform.position.z+ (GridSize/2));
+        foreach(var gameObject in SpawnedBlocks) {
+            Vector3 materialPos = new Vector3(gameObject.transform.position.x+ (GridSize/2),
+                                                gameObject.transform.position.y,
+                                                gameObject.transform.position.z+ (GridSize/2));
+            float materialDst = Vector3.Distance(callingAgent1Pos, materialPos);
+            if(BlockAgents[0].GetComponent<BlockAgent>().Block != null) {
+                if(materialDst <= 2.83f && !GameObject.ReferenceEquals(gameObject, BlockAgents[0].GetComponent<BlockAgent>().Block)) {
+                    int xPos = (int)(materialPos.x - callingAgent1Pos.x);
+                    int zPos = (int)(materialPos.z - callingAgent1Pos.z);
+                    xPos = (xPos) + 2;
+                    zPos = 2 - (zPos);
+                    obs[zPos, xPos] = 0;
+                }
+            }
+            
+            float material2Dst = Vector3.Distance(callingAgent2Pos, materialPos);
+            if(BlockAgents[1].GetComponent<BlockAgent>().Block != null) {
+                if(material2Dst <= 2.83f && !GameObject.ReferenceEquals(gameObject, BlockAgents[1].GetComponent<BlockAgent>().Block)) {
+                    int xPos = (int)(materialPos.x - callingAgent2Pos.x);
+                    int zPos = (int)(materialPos.z - callingAgent2Pos.z);
+                    xPos = (xPos) + 2;
+                    zPos = 2 - (zPos);
+                    obs1[zPos, xPos] = 0;
+                }
+            }
+           
+        }
+        
+        float agent12Dst = Vector3.Distance(callingAgent1Pos, callingAgent2Pos);
+        float agent21Dst = Vector3.Distance(callingAgent2Pos, callingAgent1Pos);
+        if(agent12Dst != 0 && agent12Dst <= 2.83f) {
+            int xPos = (int)(callingAgent2Pos.x - callingAgent1Pos.x);
+            int zPos = (int)(callingAgent2Pos.z - callingAgent1Pos.z);
+            xPos = (xPos) + 2;
+            zPos = 2 - (zPos);
+            obs[zPos, xPos] = 2;
+        }
+        if(agent21Dst != 0 && agent21Dst <= 2.83f) {
+            int xPos = (int)(callingAgent1Pos.x - callingAgent2Pos.x);
+            int zPos = (int)(callingAgent1Pos.z - callingAgent2Pos.z);
+            xPos = (xPos) + 2;
+            zPos = 2 - (zPos);
+            obs1[zPos, xPos] = 2;
+        }
+        
+        // string arrayString = "";
+        // arrayString += BlockAgents[0].gameObject.name;
+        // arrayString += "\n";
+        // for (int m = 0; m < obs.GetLength(0); m++)
+        // {
+        //     for (int n = 0; n < obs.GetLength(1); n++)
+        //     {
+        //             arrayString += string.Format("{0} ", obs[m, n]);
+        //     }
+        //     arrayString += System.Environment.NewLine + System.Environment.NewLine;
+        // }
+        // Debug.Log(arrayString);
+
+        // string arrayString2 = "";
+        // arrayString2 += BlockAgents[1].gameObject.name;
+        // arrayString2 += "\n";
+        // for (int m = 0; m < obs1.GetLength(0); m++)
+        // {
+        //     for (int n = 0; n < obs1.GetLength(1); n++)
+        //     {
+        //             arrayString2 += string.Format("{0} ", obs1[m, n]);
+        //     }
+        //     arrayString2 += System.Environment.NewLine + System.Environment.NewLine;
+        // }
+        // Debug.Log(arrayString2);
+
+        BlockAgents[0].GetComponent<BlockAgent>().AgentObservation = obs;
+        BlockAgents[1].GetComponent<BlockAgent>().AgentObservation = obs1;
     }
 }

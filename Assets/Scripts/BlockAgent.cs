@@ -20,20 +20,18 @@ public class BlockAgent : Agent
 	public GameObject BlockRoot = null;
 	[HideInInspector]
 	public int AgentIndex;
-	[HideInInspector]
-	public Vector3 AgentPosition;
-	[HideInInspector]
-	public float DistanceWithOtherAgent = 0;
 	public Material NormalMaterial;
 	public Material ReachedMaterial;
 
 	bool AgentPicked = false;
 	float OldTargetDist;
 	float OldBlockDist;
-	float OldInitialBlockDist;
+	// float OldInitialBlockDist;
 	bool AgentReached = false;
 	bool[] ButtonPressed = new bool[4];
-	int AgentCollided = 0; 
+
+	[HideInInspector]
+	public int[,] AgentObservation = new int[5, 5];
 	
     void Start () {
 
@@ -51,20 +49,33 @@ public class BlockAgent : Agent
 		AgentPicked = false;
 		OldTargetDist = Mathf.Infinity;
 		OldBlockDist = Mathf.Infinity;
-		OldInitialBlockDist = Mathf.Infinity;
+		// OldInitialBlockDist = Mathf.Infinity;
 		AgentReached = false;
-		AgentPosition = InitialPosition;
-		AgentCollided = 0;
-		gameObject.GetComponent<MeshRenderer> ().material = NormalMaterial;
+		gameObject.GetComponent<MeshRenderer>().material = NormalMaterial;
+		for(int i = 0; i < AgentObservation.GetLength(0); i++)
+        {
+            for(int j = 0; j < AgentObservation.GetLength(1); j++)
+            {
+                AgentObservation[i,j] = 1;
+            }
+        }
     }
 	
 	public override void CollectObservations(VectorSensor sensor)
 	{
-		sensor.AddObservation(DistanceWithOtherAgent);
+		List<float> obsList = new List<float>();
+		for(int i = 0; i < AgentObservation.GetLength(0); i++)
+        {
+            for(int j = 0; j < AgentObservation.GetLength(1); j++)
+            {
+                obsList.Add((float) AgentObservation[i,j]);
+            }
+        }
+		sensor.AddObservation(obsList);
 		sensor.AddObservation(this.transform.localPosition);
 		if(Block == null) {
 			sensor.AddObservation(0);
-			sensor.AddObservation(InitialPosition);
+			sensor.AddObservation(this.transform.localPosition);
 			return;
 		} else {
 			sensor.AddObservation(AgentPicked? 1 : 0);
@@ -96,45 +107,80 @@ public class BlockAgent : Agent
 					this.transform.position = new Vector3(this.transform.position.x, 
 														this.transform.position.y, 
 														this.transform.position.z + 1);
+					if(AgentObservation[1,2] == 0) {
+						AddReward(-1f);
+						// Controller.ResetEnvironment(true);
+					}
+					if(AgentObservation[1,2] == 2) {
+						Debug.Log("Agent Collided");
+						AddReward(-1f);
+					}
+					// if(AgentObservation[0,2] == 2) {
+					// 	AddReward(-0.01f);
+					// }
 					break;
 				}
 				case 2: {
 					this.transform.position = new Vector3(this.transform.position.x + 1, 
 														this.transform.position.y, 
 														this.transform.position.z);
+					if(AgentObservation[2,3] == 0) {
+						AddReward(-1f);
+						// Controller.ResetEnvironment(true);
+					}
+					if(AgentObservation[2,3] == 2) {
+						Debug.Log("Agent Collided");
+						AddReward(-1f);
+					}
+					// if(AgentObservation[2,4] == 2) {
+					// 	AddReward(-0.01f);
+					// }
 					break;
 				}
 				case 3: {
 					this.transform.position = new Vector3(this.transform.position.x, 
 														this.transform.position.y, 
 														this.transform.position.z - 1);
+					if(AgentObservation[3,2] == 0) {
+						AddReward(-1f);
+						// Controller.ResetEnvironment(true);
+					}
+					if(AgentObservation[3,2] == 2) {
+						Debug.Log("Agent Collided");
+						AddReward(-1f);
+					}
+					// if(AgentObservation[4,2] == 2) {
+					// 	AddReward(-0.01f);
+					// }
 					break;
 				}
 				case 4: {
 					this.transform.position = new Vector3(this.transform.position.x - 1, 
 														this.transform.position.y, 
 														this.transform.position.z);
+					if(AgentObservation[2,1] == 0) {
+						AddReward(-1f);
+						// Controller.ResetEnvironment(true);
+					}
+					if(AgentObservation[2,1] == 2) {
+						Debug.Log("Agent Collided");
+						AddReward(-1f);
+					}
+					// if(AgentObservation[2,0] == 2) {
+					// 	AddReward(-0.01f);
+					// }
 					break;
 				}
 			}
 		}
-		AgentPosition = this.transform.localPosition;
+
 		Controller.UpdateAgentBounds(oldAgentPos, this.transform.localPosition, gameObject);
-		if(DistanceWithOtherAgent < 1) {
-			AddReward(-1f);
-			AgentCollided++;
-			Debug.Log("Agent Collided: "+ AgentCollided);
-		}
-		if(DistanceWithOtherAgent < 2) {
-			AddReward(-0.1f);
-			// Debug.Log("Agent Collision may happen");
-		}
 		if(Block != null) {
 			if(!AgentPicked) {
 				float blockDst = Vector3.Distance(this.transform.localPosition, Block.transform.localPosition);
 				if(blockDst < 1) {
 					AgentPicked = true;
-					SetReward(1f);
+					AddReward(1f);
 					Block.transform.SetParent(this.transform);
 					Block.transform.localPosition = new Vector3(0f, 1f, 0f);
 				}
@@ -147,34 +193,38 @@ public class BlockAgent : Agent
 			if(AgentPicked) {
 				float targetDst = Vector3.Distance(this.transform.localPosition, TargetPosition);
 				if(targetDst < 1) {
-					SetReward(1f);
+					AddReward(1f);
 					AgentPicked = false;
 					Block.transform.SetParent(BlockRoot.transform);
 					Block.transform.position = this.transform.position;
 					OldTargetDist = Mathf.Infinity;
 					OldBlockDist = Mathf.Infinity;
 					Controller.AgentGoalCompleted(gameObject);
+					if(Block == null) {
+						AgentReached = true;
+						gameObject.GetComponent<MeshRenderer> ().material = ReachedMaterial;
+					}
 				} 
 				if(targetDst < OldTargetDist) {
 					OldTargetDist = targetDst;
 					AddReward(0.05f);
 				}
 			}
-		} else {
-			float initialDst = Vector3.Distance(this.transform.localPosition, InitialPosition);
-			if(initialDst < 1) {
-				if(!AgentReached) {
-					SetReward(1f);
-					gameObject.GetComponent<MeshRenderer> ().material = ReachedMaterial;
-					AgentReached = true;
-				}
-			}
-			if(initialDst < OldInitialBlockDist) {
-				OldInitialBlockDist = initialDst;
-				AddReward(0.05f);
-			}
+		// } else {
+			// float initialDst = Vector3.Distance(this.transform.localPosition, InitialPosition);
+			// if(initialDst < 1) {
+			// 	if(!AgentReached) {
+			// 		AddReward(1f);
+			// 		gameObject.GetComponent<MeshRenderer> ().material = ReachedMaterial;
+			// 		AgentReached = true;
+			// 	}
+			// }
+			// if(initialDst < OldInitialBlockDist) {
+			// 	OldInitialBlockDist = initialDst;
+			// 	AddReward(0.05f);
+			// }
 		}
-		
+		// Debug.Log(gameObject.name + "- Cumrwd: " + GetCumulativeReward());
 	}
 	
 	public override void Heuristic(in ActionBuffers actionsOut)

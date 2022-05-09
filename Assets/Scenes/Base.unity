@@ -363,7 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 8
+    VectorObservationSize: 32
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -372,7 +372,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 2a9d6436e9b72ae438b2e3f797c00562, type: 3}
+  m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: BlockAgent
@@ -417,8 +417,6 @@ MonoBehaviour:
   Block: {fileID: 0}
   BlockRoot: {fileID: 0}
   AgentIndex: 0
-  AgentPosition: {x: 0, y: 0, z: 0}
-  DistanceWithOtherAgent: 0
   NormalMaterial: {fileID: 2100000, guid: 347e2843915e38c408f9c83e8df21daf, type: 2}
   ReachedMaterial: {fileID: 2100000, guid: 7079f36697c0022438a221ff6b2e7bf9, type: 2}
 --- !u!114 &620921254
@@ -1143,7 +1141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 8
+    VectorObservationSize: 32
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -1152,7 +1150,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 2a9d6436e9b72ae438b2e3f797c00562, type: 3}
+  m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: BlockAgent
@@ -1197,8 +1195,6 @@ MonoBehaviour:
   Block: {fileID: 0}
   BlockRoot: {fileID: 0}
   AgentIndex: 0
-  AgentPosition: {x: 0, y: 0, z: 0}
-  DistanceWithOtherAgent: 0
   NormalMaterial: {fileID: 2100000, guid: 347e2843915e38c408f9c83e8df21daf, type: 2}
   ReachedMaterial: {fileID: 2100000, guid: 7079f36697c0022438a221ff6b2e7bf9, type: 2}
 --- !u!65 &1103635322
@@ -1309,7 +1305,7 @@ MonoBehaviour:
   GridSize: 20
   NumberOfMaterials: 10
   MaterialHeight: 5
-  TargetHeight: 5
+  TargetHeight: 2
   BlockSpawnStart: {fileID: 1681037135}
   TargetSpawnStart: {fileID: 1785256709}
   Block: {fileID: 6547620035758024826, guid: 9552a328d1f48cb499192292b31f58b7, type: 3}
@@ -1321,7 +1317,8 @@ MonoBehaviour:
   HeuristicIndex: 0
   MaxTimeSteps: 800
   InHeuristics: 0
-  Randomized: 1
+  Randomized: 0
+  TimeStep: 0
 --- !u!1 &1336268971
 GameObject:
   m_ObjectHideFlags: 0
