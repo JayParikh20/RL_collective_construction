@@ -2,49 +2,31 @@
     "BlockAgent": {
         "checkpoints": [
             {
-                "steps": 461702,
-                "file_path": "results\\MatColRandom\\BlockAgent\\BlockAgent-461702.onnx",
+                "steps": 499968,
+                "file_path": "results\\MatColRandom\\BlockAgent\\BlockAgent-499968.onnx",
                 "reward": null,
-                "creation_time": 1652133351.5834367,
+                "creation_time": 1652142225.2600465,
                 "auxillary_file_paths": [
-                    "results\\MatColRandom\\BlockAgent\\BlockAgent-461702.pt"
+                    "results\\MatColRandom\\BlockAgent\\BlockAgent-499968.pt"
                 ]
             },
             {
-                "steps": 493438,
-                "file_path": "results\\MatColRandom\\BlockAgent\\BlockAgent-493438.onnx",
+                "steps": 690928,
+                "file_path": "results\\MatColRandom\\BlockAgent\\BlockAgent-690928.onnx",
                 "reward": null,
-                "creation_time": 1652133753.2812283,
+                "creation_time": 1652144551.212763,
                 "auxillary_file_paths": [
-                    "results\\MatColRandom\\BlockAgent\\BlockAgent-493438.pt"
-                ]
-            },
-            {
-                "steps": 499982,
-                "file_path": "results\\MatColRandom\\BlockAgent\\BlockAgent-499982.onnx",
-                "reward": null,
-                "creation_time": 1652133872.09243,
-                "auxillary_file_paths": [
-                    "results\\MatColRandom\\BlockAgent\\BlockAgent-499982.pt"
-                ]
-            },
-            {
-                "steps": 512814,
-                "file_path": "results\\MatColRandom\\BlockAgent\\BlockAgent-512814.onnx",
-                "reward": null,
-                "creation_time": 1652134107.9496436,
-                "auxillary_file_paths": [
-                    "results\\MatColRandom\\BlockAgent\\BlockAgent-512814.pt"
+                    "results\\MatColRandom\\BlockAgent\\BlockAgent-690928.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 512814,
+            "steps": 690928,
             "file_path": "results\\MatColRandom\\BlockAgent.onnx",
             "reward": null,
-            "creation_time": 1652134107.9496436,
+            "creation_time": 1652144551.212763,
             "auxillary_file_paths": [
-                "results\\MatColRandom\\BlockAgent\\BlockAgent-512814.pt"
+                "results\\MatColRandom\\BlockAgent\\BlockAgent-690928.pt"
             ]
         }
     },

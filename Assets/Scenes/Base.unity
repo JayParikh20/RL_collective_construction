@@ -367,8 +367,8 @@ MonoBehaviour:
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 05000000
-    VectorActionSize: 05000000
+      BranchSizes: 04000000
+    VectorActionSize: 04000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
@@ -419,6 +419,7 @@ MonoBehaviour:
   AgentIndex: 0
   NormalMaterial: {fileID: 2100000, guid: 347e2843915e38c408f9c83e8df21daf, type: 2}
   ReachedMaterial: {fileID: 2100000, guid: 7079f36697c0022438a221ff6b2e7bf9, type: 2}
+  showCummReward: 0
 --- !u!114 &620921254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1145,8 +1146,8 @@ MonoBehaviour:
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 05000000
-    VectorActionSize: 05000000
+      BranchSizes: 04000000
+    VectorActionSize: 04000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
@@ -1197,6 +1198,7 @@ MonoBehaviour:
   AgentIndex: 0
   NormalMaterial: {fileID: 2100000, guid: 347e2843915e38c408f9c83e8df21daf, type: 2}
   ReachedMaterial: {fileID: 2100000, guid: 7079f36697c0022438a221ff6b2e7bf9, type: 2}
+  showCummReward: 0
 --- !u!65 &1103635322
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1317,7 +1319,7 @@ MonoBehaviour:
   HeuristicIndex: 0
   MaxTimeSteps: 800
   InHeuristics: 0
-  Randomized: 0
+  Randomized: 1
   TimeStep: 0
 --- !u!1 &1336268971
 GameObject:

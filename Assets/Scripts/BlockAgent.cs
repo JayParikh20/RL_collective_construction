@@ -22,6 +22,7 @@ public class BlockAgent : Agent
 	public int AgentIndex;
 	public Material NormalMaterial;
 	public Material ReachedMaterial;
+	public bool showCummReward = false;
 
 	bool AgentPicked = false;
 	float OldTargetDist;
@@ -100,10 +101,10 @@ public class BlockAgent : Agent
 		if(!AgentReached) {
 			switch(action)
 			{
+				// case 0: {
+				// 	break;
+				// }
 				case 0: {
-					break;
-				}
-				case 1: {
 					this.transform.position = new Vector3(this.transform.position.x, 
 														this.transform.position.y, 
 														this.transform.position.z + 1);
@@ -120,7 +121,7 @@ public class BlockAgent : Agent
 					// }
 					break;
 				}
-				case 2: {
+				case 1: {
 					this.transform.position = new Vector3(this.transform.position.x + 1, 
 														this.transform.position.y, 
 														this.transform.position.z);
@@ -137,7 +138,7 @@ public class BlockAgent : Agent
 					// }
 					break;
 				}
-				case 3: {
+				case 2: {
 					this.transform.position = new Vector3(this.transform.position.x, 
 														this.transform.position.y, 
 														this.transform.position.z - 1);
@@ -154,7 +155,7 @@ public class BlockAgent : Agent
 					// }
 					break;
 				}
-				case 4: {
+				case 3: {
 					this.transform.position = new Vector3(this.transform.position.x - 1, 
 														this.transform.position.y, 
 														this.transform.position.z);
@@ -186,7 +187,7 @@ public class BlockAgent : Agent
 				}
 				if(blockDst < OldBlockDist) {
 					OldBlockDist = blockDst;
-					AddReward(0.05f);
+					AddReward(0.01f);
 				}
 			}
 
@@ -207,7 +208,7 @@ public class BlockAgent : Agent
 				} 
 				if(targetDst < OldTargetDist) {
 					OldTargetDist = targetDst;
-					AddReward(0.05f);
+					AddReward(0.01f);
 				}
 			}
 		// } else {
@@ -221,10 +222,12 @@ public class BlockAgent : Agent
 			// }
 			// if(initialDst < OldInitialBlockDist) {
 			// 	OldInitialBlockDist = initialDst;
-			// 	AddReward(0.05f);
+			// 	AddReward(0.01f);
 			// }
 		}
-		// Debug.Log(gameObject.name + "- Cumrwd: " + GetCumulativeReward());
+		if(showCummReward) {
+ 			Debug.Log(gameObject.name + "- Cumrwd: " + GetCumulativeReward());
+		}
 	}
 	
 	public override void Heuristic(in ActionBuffers actionsOut)
@@ -243,19 +246,19 @@ public class BlockAgent : Agent
 		}
 	
 		if(ButtonPressed[0]) {
-			discreteActionsOut[0] = 1;
+			discreteActionsOut[0] = 0;
 		}	
 		
 		if(ButtonPressed[1]) {
-			discreteActionsOut[0] = 2;
+			discreteActionsOut[0] = 1;
 		}
 
 		if(ButtonPressed[2]) {
-			discreteActionsOut[0] = 3;
+			discreteActionsOut[0] = 2;
 		}
 		
 		if(ButtonPressed[3]) {
-			discreteActionsOut[0] = 4;
+			discreteActionsOut[0] = 3;
 		}
 	}
 }
