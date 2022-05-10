@@ -21,6 +21,7 @@ public class ConstructionController : MonoBehaviour
     public int MaxTimeSteps = -1;
     public bool InHeuristics = false;
     public bool Randomized = false;
+    public bool SpecificShape = false;
     
     private List<GameObject> SpawnedBlocks = new List<GameObject>();
     private List<GameObject> SpawnedTargets = new List<GameObject>();
@@ -153,7 +154,30 @@ public class ConstructionController : MonoBehaviour
         }
         TargetRoot = new GameObject("Targets");
         TargetRoot.transform.SetParent(this.transform.parent);
-        if(Randomized) {
+        if(SpecificShape) {
+            List<Vector3> Hshape = new List<Vector3>();
+            Hshape.Add(new Vector3(4.5f, 0.5f, 3.5f));
+            Hshape.Add(new Vector3(4.5f, 0.5f, 2.5f));
+            Hshape.Add(new Vector3(4.5f, 0.5f, 1.5f));
+            Hshape.Add(new Vector3(4.5f, 0.5f, 0.5f));
+
+            Hshape.Add(new Vector3(3.5f, 0.5f, 1.5f));
+            Hshape.Add(new Vector3(2.5f, 0.5f, 1.5f));
+            Hshape.Add(new Vector3(1.5f, 0.5f, 1.5f));
+
+            Hshape.Add(new Vector3(0.5f, 0.5f, 2.5f));
+            Hshape.Add(new Vector3(0.5f, 0.5f, 1.5f));
+            Hshape.Add(new Vector3(0.5f, 0.5f, 0.5f));
+
+            
+           
+            for(int i=0; i < NumberOfMaterials; i++) {
+                GameObject target = Instantiate(Target, Hshape[i], Quaternion.identity);
+                target.transform.SetParent(TargetRoot.transform); 
+                SpawnedTargets.Add(target);
+            }
+        }
+        else if(Randomized) {
             List<Vector3> positions = new List<Vector3>();
             for(int i=0; i < NumberOfMaterials; i++) {
                 float blockX = UnityEngine.Random.Range(0, 5) + 0.5f;

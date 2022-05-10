@@ -1,0 +1,29 @@
+{
+    "BlockAgent": {
+        "checkpoints": [
+            {
+                "steps": 456760,
+                "file_path": "results\\MatCol3\\BlockAgent\\BlockAgent-456760.onnx",
+                "reward": null,
+                "creation_time": 1652162162.880829,
+                "auxillary_file_paths": [
+                    "results\\MatCol3\\BlockAgent\\BlockAgent-456760.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 456760,
+            "file_path": "results\\MatCol3\\BlockAgent.onnx",
+            "reward": null,
+            "creation_time": 1652162162.880829,
+            "auxillary_file_paths": [
+                "results\\MatCol3\\BlockAgent\\BlockAgent-456760.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

@@ -101,10 +101,10 @@ public class BlockAgent : Agent
 		if(!AgentReached) {
 			switch(action)
 			{
-				// case 0: {
-				// 	break;
-				// }
 				case 0: {
+					break;
+				}
+				case 1: {
 					this.transform.position = new Vector3(this.transform.position.x, 
 														this.transform.position.y, 
 														this.transform.position.z + 1);
@@ -117,11 +117,11 @@ public class BlockAgent : Agent
 						AddReward(-1f);
 					}
 					// if(AgentObservation[0,2] == 2) {
-					// 	AddReward(-0.01f);
+					// 	AddReward(-0.04f);
 					// }
 					break;
 				}
-				case 1: {
+				case 2: {
 					this.transform.position = new Vector3(this.transform.position.x + 1, 
 														this.transform.position.y, 
 														this.transform.position.z);
@@ -134,11 +134,11 @@ public class BlockAgent : Agent
 						AddReward(-1f);
 					}
 					// if(AgentObservation[2,4] == 2) {
-					// 	AddReward(-0.01f);
+					// 	AddReward(-0.04f);
 					// }
 					break;
 				}
-				case 2: {
+				case 3: {
 					this.transform.position = new Vector3(this.transform.position.x, 
 														this.transform.position.y, 
 														this.transform.position.z - 1);
@@ -151,11 +151,11 @@ public class BlockAgent : Agent
 						AddReward(-1f);
 					}
 					// if(AgentObservation[4,2] == 2) {
-					// 	AddReward(-0.01f);
+					// 	AddReward(-0.04f);
 					// }
 					break;
 				}
-				case 3: {
+				case 4: {
 					this.transform.position = new Vector3(this.transform.position.x - 1, 
 														this.transform.position.y, 
 														this.transform.position.z);
@@ -168,7 +168,7 @@ public class BlockAgent : Agent
 						AddReward(-1f);
 					}
 					// if(AgentObservation[2,0] == 2) {
-					// 	AddReward(-0.01f);
+					// 	AddReward(-0.04f);
 					// }
 					break;
 				}
@@ -187,7 +187,7 @@ public class BlockAgent : Agent
 				}
 				if(blockDst < OldBlockDist) {
 					OldBlockDist = blockDst;
-					AddReward(0.01f);
+					AddReward(0.05f);
 				}
 			}
 
@@ -208,7 +208,7 @@ public class BlockAgent : Agent
 				} 
 				if(targetDst < OldTargetDist) {
 					OldTargetDist = targetDst;
-					AddReward(0.01f);
+					AddReward(0.05f);
 				}
 			}
 		// } else {
@@ -246,19 +246,19 @@ public class BlockAgent : Agent
 		}
 	
 		if(ButtonPressed[0]) {
-			discreteActionsOut[0] = 0;
+			discreteActionsOut[0] = 1;
 		}	
 		
 		if(ButtonPressed[1]) {
-			discreteActionsOut[0] = 1;
+			discreteActionsOut[0] = 2;
 		}
 
 		if(ButtonPressed[2]) {
-			discreteActionsOut[0] = 2;
+			discreteActionsOut[0] = 3;
 		}
 		
 		if(ButtonPressed[3]) {
-			discreteActionsOut[0] = 3;
+			discreteActionsOut[0] = 4;
 		}
 	}
 }

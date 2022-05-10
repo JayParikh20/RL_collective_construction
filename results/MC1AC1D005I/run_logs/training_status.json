@@ -1,0 +1,47 @@
+{
+    "BlockAgent": {
+        "checkpoints": [
+            {
+                "steps": 336044,
+                "file_path": "results\\MC1AC1D005\\BlockAgent\\BlockAgent-336044.onnx",
+                "reward": null,
+                "creation_time": 1652208225.2954094,
+                "auxillary_file_paths": [
+                    "results\\MC1AC1D005\\BlockAgent\\BlockAgent-336044.pt"
+                ]
+            },
+            {
+                "steps": 499954,
+                "file_path": "results\\MC1AC1D005\\BlockAgent\\BlockAgent-499954.onnx",
+                "reward": 9.34999942779541,
+                "creation_time": 1652210491.9663777,
+                "auxillary_file_paths": [
+                    "results\\MC1AC1D005\\BlockAgent\\BlockAgent-499954.pt"
+                ]
+            },
+            {
+                "steps": 500264,
+                "file_path": "results\\MC1AC1D005\\BlockAgent\\BlockAgent-500264.onnx",
+                "reward": null,
+                "creation_time": 1652210496.6524389,
+                "auxillary_file_paths": [
+                    "results\\MC1AC1D005\\BlockAgent\\BlockAgent-500264.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 500264,
+            "file_path": "results\\MC1AC1D005\\BlockAgent.onnx",
+            "reward": null,
+            "creation_time": 1652210496.6524389,
+            "auxillary_file_paths": [
+                "results\\MC1AC1D005\\BlockAgent\\BlockAgent-500264.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}
