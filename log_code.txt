@@ -1,0 +1,8 @@
+MC - Material Collision
+AC - Agent Collision
+D - Distance
+I - Idle
+MTL - No Material Location
+NTL - No Target Location
+R - Random Target Location
+OS - Observation Size

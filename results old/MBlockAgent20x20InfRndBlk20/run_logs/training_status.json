@@ -1,0 +1,29 @@
+{
+    "BlockAgent": {
+        "checkpoints": [
+            {
+                "steps": 300025,
+                "file_path": "results\\MBlockAgent20x20InfRndBlk20\\BlockAgent\\BlockAgent-300025.onnx",
+                "reward": null,
+                "creation_time": 1650735630.049483,
+                "auxillary_file_paths": [
+                    "results\\MBlockAgent20x20InfRndBlk20\\BlockAgent\\BlockAgent-300025.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 300025,
+            "file_path": "results\\MBlockAgent20x20InfRndBlk20\\BlockAgent.onnx",
+            "reward": null,
+            "creation_time": 1650735630.049483,
+            "auxillary_file_paths": [
+                "results\\MBlockAgent20x20InfRndBlk20\\BlockAgent\\BlockAgent-300025.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

@@ -1,0 +1,56 @@
+{
+    "BlockAgent": {
+        "checkpoints": [
+            {
+                "steps": 499978,
+                "file_path": "results\\MC01AC00D00INMLNTLROS29\\BlockAgent\\BlockAgent-499978.onnx",
+                "reward": 6.275000361260027,
+                "creation_time": 1652250075.6919239,
+                "auxillary_file_paths": [
+                    "results\\MC01AC00D00INMLNTLROS29\\BlockAgent\\BlockAgent-499978.pt"
+                ]
+            },
+            {
+                "steps": 635982,
+                "file_path": "results\\MC01AC00D00INMLNTLROS29\\BlockAgent\\BlockAgent-635982.onnx",
+                "reward": null,
+                "creation_time": 1652251425.998219,
+                "auxillary_file_paths": [
+                    "results\\MC01AC00D00INMLNTLROS29\\BlockAgent\\BlockAgent-635982.pt"
+                ]
+            },
+            {
+                "steps": 999974,
+                "file_path": "results\\MC01AC00D00INMLNTLROS29\\BlockAgent\\BlockAgent-999974.onnx",
+                "reward": 3.277500629425049,
+                "creation_time": 1652255467.852827,
+                "auxillary_file_paths": [
+                    "results\\MC01AC00D00INMLNTLROS29\\BlockAgent\\BlockAgent-999974.pt"
+                ]
+            },
+            {
+                "steps": 1000102,
+                "file_path": "results\\MC01AC00D00INMLNTLROS29\\BlockAgent\\BlockAgent-1000102.onnx",
+                "reward": 3.277500629425049,
+                "creation_time": 1652255467.9242723,
+                "auxillary_file_paths": [
+                    "results\\MC01AC00D00INMLNTLROS29\\BlockAgent\\BlockAgent-1000102.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 1000102,
+            "file_path": "results\\MC01AC00D00INMLNTLROS29\\BlockAgent.onnx",
+            "reward": 3.277500629425049,
+            "creation_time": 1652255467.9242723,
+            "auxillary_file_paths": [
+                "results\\MC01AC00D00INMLNTLROS29\\BlockAgent\\BlockAgent-1000102.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}
